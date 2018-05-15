@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!--数据源-->
+	<bean id="dataSource" class="com.wangyin.commons.cp.WangyinCPDataSource">
+		<property name="propertiesLocation" value="classpath:spring/mybatis/datasource.properties"/>
+	</bean>
+
+	<!--事务管理-->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!--注解管理事务-->
+	<tx:annotation-driven/>
+
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--必须和事务管理的数据源一致-->
+		<property name="dataSource" ref="dataSource"/>
+		<!--如果Mapper.class与Mapper.xml在同一路径下，这个配置可以不要-->
+		<property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"/>
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true"/>
+			</bean>
+		</property>
+		<property name="typeAliasesPackage" value="com.jd.absmall.entity"/>
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 扫描该包下所有的类 -->
+		<property name="basePackage" value="com.jd.absmall.mapper"/>
+		<!-- 扫描有该注解的类 -->
+		<!--<property name="annotationClass" value="org.springframework.stereotype.Repository"/>-->
+		<!-- 扫描继承该接口的类 -->
+		<!--<property name="markerInterface" value="xx.class"/>-->
+	</bean>
+
+	<!--扫Service-->
+	<context:component-scan base-package="com.jd.absmall.service.impl">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+</beans>

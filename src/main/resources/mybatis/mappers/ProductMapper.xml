@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jd.absmall.mapper.ProductMapper">
+    <!-- 开启二级缓存 -->
+    <cache/>
+
+    <select id="queryProduct" resultType="com.jd.absmall.entity.Product">
+        select * from abs_mall_product where product_id = #{productId}
+    </select>
+
+    <select id="queryProducts" resultType="com.jd.absmall.entity.Product">
+        select * from abs_mall_product
+    </select>
+
+    <update id="updateProduct" parameterType="product">
+        update abs_mall_product set modified_date = now(), last_modified_by = #{lastModifiedBy} where product_id = #{productId}
+    </update>
+</mapper>
